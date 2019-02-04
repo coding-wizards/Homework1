@@ -101,3 +101,21 @@ new_val={"Occupied":'Moderate',"Price":"Cheap","Music":"Loud","Location":"City-C
 print("new_val: ",new_val)
 prediction=predict(new_val,tree)
 print("prediction: ",prediction)
+
+
+
+#using sklearn
+from sklearn.tree import DecisionTreeClassifier
+train_features=dataset.iloc[:11,:6]
+test_features=dataset.iloc[11:,:6]
+train_targets=dataset.iloc[:11,-1]
+test_targets=dataset.iloc[11:,-1]
+
+train_x=pd.get_dummies(train_features)
+train_y=pd.get_dummies(train_targets)
+test_x=pd.get_dummies(test_features)
+test_y=pd.get_dummies(test_targets)
+
+tree= DecisionTreeClassifier(criterion='entropy').fit(train_x,train_y)
+prediction=tree.predict(test_x)
+print(tree.score(test_x,test_y)*100,"%")
