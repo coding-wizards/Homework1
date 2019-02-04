@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb  1 14:57:30 2019
+Created on Tue Jan 29 13:06:51 2019
 
-@author: cami
+@author: camilo barrera, 
 """
 
 import pandas as pd
@@ -55,8 +55,9 @@ def tree_ID3(data,dataset,features,response="Enjoy",parent_node=None):
     #If none of the above holds, grow the tree
     else:
         parent_node=np.unique(data[response])[np.argmax(np.unique(data[response],return_counts=True)[1])]
-            
+
         #Select the fueature that best splits the dataset
+        ##the function argmax ensures that in case of a tie, the first occurrence (the feature that is closer to the front of the list) is chosen as the best feature
         item_values=[InformationGain(data,feature,response) for feature in features]
         best_feature_index=np.argmax(item_values)
         best_feature=features[best_feature_index]
@@ -64,7 +65,7 @@ def tree_ID3(data,dataset,features,response="Enjoy",parent_node=None):
         #Creathe the tree structure
         tree={best_feature:{}}
     
-        #Remove the feature witht he best information
+        #Remove the feature with the best information
         features=[i for i in features if i != best_feature]
             
         #Grow a branch under the root node for each possible value of the root feature node
@@ -79,10 +80,10 @@ def tree_ID3(data,dataset,features,response="Enjoy",parent_node=None):
             
             #Add the subree, grown from the sub_dataset to the tree under the root node
             tree[best_feature][value]=subtree
-            return(tree)
+        return(tree)
             
 ###Function to predict new querys
-def predict(query, tree, default=1):
+def predict(query, tree, default='Yes'):
     for key in list(query.keys()):
         try:
             result=tree[key][query[key]]
@@ -96,3 +97,7 @@ def predict(query, tree, default=1):
         
 tree=tree_ID3(dataset,dataset,dataset.columns[:-1])
 pprint(tree)
+new_val={"Occupied":'Moderate',"Price":"Cheap","Music":"Loud","Location":"City-Center ","VIP":"No","Favorite Beer":"No"}
+print("new_val: ",new_val)
+prediction=predict(new_val,tree)
+print("prediction: ",prediction)
